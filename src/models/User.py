@@ -20,9 +20,19 @@ class User(db.Model):
         self.status = status
     
     def __repr__(self):
-        
-        return '<User %r>' % self.name
+        return f"<User(id={self.user_id}, email={self.email}, name={self.name}, role={self.role}, balance={self.balance}, status={self.status})>"    
     
+    
+    def toDict(self):
+        return {
+            'user_id': self.user_id,
+            'email': self.email,
+            'name': self.name,
+            'role': self.role,
+            'balance': self.balance,
+            'status': self.status
+        }
+        
     def __iter__(self):
         yield 'user_id', self.user_id
         yield 'email', self.email

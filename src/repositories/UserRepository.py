@@ -2,8 +2,8 @@ from src.models.User import User,db
 import bcrypt
 import sys
 class UserRepository:
-  def getAllUser():
-    return User.query.all() or []
+  def getAllUser(self):
+    return User.query.all()  
   
   def getUserByEmail(self,email):
     return User.query.filter_by(email=email).first()
