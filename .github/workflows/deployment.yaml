@@ -40,10 +40,4 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
-          script: |
-            cd seticket-backend/
-            export FLASK_APP=main.py
-            . ./venv/bin/activate
-            git pull
-            pip install -r requirement.txt
-            pm2 restart seticket-backend
+          script: cd seticket-backend/; export FLASK_APP=main.py; . ./venv/bin/activate; git pull; pip install -r requirement.txt; pm2 restart seticket-backend
