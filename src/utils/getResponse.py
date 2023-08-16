@@ -8,11 +8,12 @@ def success(data,message):
   response.headers.add('Access-Control-Allow-Origin', '*')
   return response
    
-def error(errors,message):
+def error(errors,message,status_code=400):
     response = jsonify({
-      'status_code': 400,
+      'status_code': status_code,
       'message': message,
       'data': errors
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.status_code = status_code
     return response

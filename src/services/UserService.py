@@ -1,7 +1,8 @@
 
 from src.repositories.UserRepository import UserRepository
-import sys
-user_repository = UserRepository()    
+from src.utils.convert import transformToDictList
+
+userRepository = UserRepository()    
 
 class UserService:
     @staticmethod
@@ -14,8 +15,8 @@ class UserService:
     
     def getAllUser(self):
         try:
-            data = user_repository.getAllUser()
-            return UserService.failedOrSuccessRequest('success', 200, data)
+            data = userRepository.getAllUser()
+            return UserService.failedOrSuccessRequest('success', 200, transformToDictList(data))
         except Exception as e:
             return UserService.failedOrSuccessRequest('failed', 500, str(e))
     

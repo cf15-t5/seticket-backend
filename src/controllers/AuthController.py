@@ -18,3 +18,11 @@ def register():
   if(result['status'] == 'failed'):
    return Response.error(result['data'],result['code'])
   return Response.success(result['data'],"success create new user")
+
+@AuthApp.route('/login', methods=['POST'])
+def login():
+  req = request.json
+  result = authService.login(req)
+  if(result['status'] == 'failed'):
+   return Response.error(result['data'],result['code'])
+  return Response.success(result['data'],"success login")
