@@ -1,7 +1,9 @@
 from flask import Flask
+from flask_cors import CORS
 from src.config.config import BASE_URL, PORT, DEBUG
 from src.config.database import database
 main_app = Flask(__name__)
+CORS(main_app)
 db = database(main_app)
 
 
