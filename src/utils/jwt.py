@@ -1,7 +1,5 @@
 import jwt
-import json
 from src.config import config
-import sys
 def encode(data:dict):
   payload= {
     "user_id": data['user_id'],

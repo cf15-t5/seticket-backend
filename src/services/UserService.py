@@ -1,10 +1,10 @@
 
 from src.repositories.UserRepository import UserRepository
 from src.utils.convert import transformToDictList
-
+from src.services.Service import Service
 userRepository = UserRepository()    
 
-class UserService:
+class UserService(Service):
     @staticmethod
     def failedOrSuccessRequest(status, code, data):
         return {
