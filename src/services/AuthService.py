@@ -41,9 +41,10 @@ class AuthService(Service):
             if not user or not isPasswordMatch:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
             
-            userDict = dict(user)
+            user_dict = dict(user)
             
-            userDict['token'] = jwt.encode(userDict)
-            return self.failedOrSuccessRequest('success', 200,userDict)
+            user_dict['token'] = jwt.encode(user_dict)
+            return self.failedOrSuccessRequest('success', 200,user_dict)
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
+    
