@@ -4,9 +4,8 @@ from src.repositories.UserRepository import UserRepository
 import bcrypt
 import src.utils.jwt as jwt 
 user_repository = UserRepository()    
-
-import sys
-class AuthService():
+from  src.services.Service import Service
+class AuthService(Service):
     @staticmethod
     def failedOrSuccessRequest(status, code, data):
         return {
