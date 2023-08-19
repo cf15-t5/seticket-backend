@@ -5,6 +5,8 @@ all_user_permission=[
 
 admin_permission=[
   '/auth/verify',
+  '/users'
+  
 ]
 
 user_permission=[

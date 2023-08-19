@@ -23,3 +23,8 @@ class UserRepository:
     return dict(newUser)
   def getUserById(self,user_id):
     return User.query.filter_by(user_id=user_id).first()
+  def verifyUser(self,user_id):
+    user = User.query.filter_by(user_id=user_id).first()
+    user.status = 'ACTIVE'
+    db.session.commit()
+    return dict(user)
