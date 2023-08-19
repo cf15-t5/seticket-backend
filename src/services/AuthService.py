@@ -40,10 +40,22 @@ class AuthService(Service):
             isPasswordMatch = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8') )
             if not user or not isPasswordMatch:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
+            print(user.status)
+            if(user.status == 'INACTIVE'):return  self.failedOrSuccessRequest('failed', 400, 'user not verified')
+            user_dict = dict(user)
             
-            userDict = dict(user)
+            user_dict['token'] = jwt.encode(user_dict)
+            return self.failedOrSuccessRequest('success', 200,user_dict)
+        except ValueError as e:
+            return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
+    def verifyEO(self,data):
+        try:
+            user = user_repository.getUserById(data['user_id'])
+            if not user:
+                return self.failedOrSuccessRequest('failed', 400, 'user not found')
             
-            userDict['token'] = jwt.encode(userDict)
-            return self.failedOrSuccessRequest('success', 200,userDict)
+            user.status = 'ACTIVE'
+            user_repository.commit()
+            return self.failedOrSuccessRequest('success', 200, dict(user))
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
