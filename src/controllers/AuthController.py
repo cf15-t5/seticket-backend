@@ -28,7 +28,17 @@ def login():
   return Response.success(result['data'],"success login")
 
 @AuthApp.route('/me', methods=['GET'])
-@isAuthenticated()
+@isAuthenticated
 def me():
+  
   return Response.success(g.user,"success get user data")
 
+
+@AuthApp.route('/verify', methods=['post'])
+@isAuthenticated
+def verify():  
+  req = request.json
+  result = authService.verify(req)
+  if(result['status'] == 'failed'):
+   return Response.error(result['data'],result['code'])
+  return Response.success(result['data'],"success verify user")

@@ -10,3 +10,6 @@ class RegisterValidator(BaseModel):
 class LoginValidator(BaseModel):
   email: EmailStr
   password: constr(min_length=8, max_length=16)
+
+class VerifyValidator(BaseModel):
+  user_id: int

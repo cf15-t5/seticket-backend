@@ -1,4 +1,4 @@
-from src.utils.validator.AuthValidator import RegisterValidator, LoginValidator
+from src.utils.validator.AuthValidator import RegisterValidator, LoginValidator,VerifyValidator
 from src.utils.errorHandler import errorHandler
 from src.repositories.UserRepository import UserRepository
 import bcrypt
@@ -48,6 +48,7 @@ class AuthService(Service):
             return self.failedOrSuccessRequest('success', 200,user_dict)
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
+        
     def verifyEO(self,data):
         try:
             user = user_repository.getUserById(data['user_id'])
@@ -56,6 +57,17 @@ class AuthService(Service):
             
             user.status = 'ACTIVE'
             user_repository.commit()
+            return self.failedOrSuccessRequest('success', 200, dict(user))
+        except ValueError as e:
+            return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
+    def verify(self,data):
+        try:
+            validate = VerifyValidator(**data)
+            if not validate:
+                return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
+            user = user_repository.verifyUser(data['user_id'])
+            if not user:
+                return self.failedOrSuccessRequest('failed', 400, 'user not found')
             return self.failedOrSuccessRequest('success', 200, dict(user))
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))

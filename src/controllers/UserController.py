@@ -8,7 +8,7 @@ UserApp = Blueprint('UserApp', __name__,)
 userService =  UserService()
 
 @UserApp.route('/', methods=['GET'])
-@isAuthenticated()
+@isAuthenticated
 def index():
   result = userService.getAllUser()
   return Response.success(result['data'],"success get all user")
