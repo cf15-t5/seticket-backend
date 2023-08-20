@@ -1,14 +1,13 @@
 all_user_permission=[
-  '/auth/me/',
+  '/auth/me',
   '/auth/logout',
-  
+  '/categories',
 ]
 
 admin_permission=[
   '/auth/verify',
-  '/users/'
-  
-  
+  '/users/',
+  '/categories/*',
 ]
 
 user_permission=[

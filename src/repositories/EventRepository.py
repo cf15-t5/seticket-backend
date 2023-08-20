@@ -1,7 +1,26 @@
 from src.models.Event import Event,db
+from src.models.Category import Category,db
+
 class EventRepository:
   def getAllEvent(self):
     return Event.query.all()  
+  
+  def getAllEventFiltered(self,filters):
+    query = Event.query
+
+    if 'address' in filters and filters['address']:
+        query = query.filter(Event.address.ilike(f"%{filters['address']}%"))
+
+    if 'date_of_event' in filters and filters['date_of_event']:
+        query = query.filter(Event.date_of_event >= filters['date_of_event'])
+
+    if 'category_name' in filters and filters['category_name']:
+        query = query.join(Category).filter(Category.name.ilike(f"%{filters['category_name']}%"))
+
+    if 'name' in filters and filters['name']:
+        query = query.filter(Event.name.ilike(f"%{filters['name']}%"))
+
+    return query.all()
   def createNewEvent(self,title,description,price,date_of_event,number_of_ticket,user_id,poster_path,address):
     newEvent = Event(
       title=title, 

@@ -13,10 +13,11 @@ class Event(db.Model):
   poster_path = db.Column(db.Text)
   address= db.Column(db.Text)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+  category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
   created_at = db.Column(db.Date, default=db.func.current_timestamp())
   
   
-  def __init__(self, title, description, price, date_of_event, number_of_ticket,user_id,poster_path,address ):
+  def __init__(self, title, description, price, date_of_event, number_of_ticket,user_id,poster_path,address,category_id ):
     self.title= title
     self.description = description
     self.price = price
@@ -25,11 +26,12 @@ class Event(db.Model):
     self.user_id = user_id
     self.poster_path = poster_path
     self.status = 'PENDING'
+    self.category_id = category_id
     self.address = address
   
   def __repr__(self):
 
-    return f"<Event (id={self.event_id}, title={self.title}, description={self.description}, price={self.price}, date_of_event={self.date_of_event}, number_of_tickets={self.number_of_ticket}, user_id={self.user_id}, poster_path={self.poster_path}, status={self.status})>"
+    return f"<Event (id={self.event_id}, title={self.title}, description={self.description}, price={self.price}, date_of_event={self.date_of_event}, number_of_tickets={self.number_of_ticket}, user_id={self.user_id}, poster_path={self.poster_path}, status={self.status},category_id={self.category_id})>"
   
   
   def toDict(self):
@@ -42,7 +44,8 @@ class Event(db.Model):
           'number_of_tickets': self.number_of_ticket,
           'user_id': self.user_id,
           'poster_path': self.poster_path,
-          'status': self.status
+          'status': self.status,
+          'category_id': self.category_id
       }
       
   def __iter__(self):
@@ -55,5 +58,5 @@ class Event(db.Model):
       yield 'user_id', self.user_id
       yield 'poster_path', self.poster_path
       yield 'status', self.status
+      yield 'category_id', self.category_id
     
-generateDatabase(main_app,db)
