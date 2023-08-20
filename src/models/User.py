@@ -40,5 +40,3 @@ class User(db.Model):
         yield 'role', self.role
         yield 'balance', self.balance
         yield 'status', self.status
-
-generateDatabase(main_app,db)
