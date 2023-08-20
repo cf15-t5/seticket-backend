@@ -2,6 +2,7 @@ all_user_permission=[
   '/auth/me',
   '/auth/logout',
   '/categories',
+  '/events/',
 ]
 
 admin_permission=[

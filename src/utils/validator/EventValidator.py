@@ -7,6 +7,7 @@ class CreateNewEventValidator(BaseModel):
   description: str
   date_of_event: str
   number_of_ticket: int
+  category_id: int
   @classmethod
   def as_form(cls, **kwargs):
     return cls(**kwargs)
