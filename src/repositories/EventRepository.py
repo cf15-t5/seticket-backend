@@ -10,13 +10,21 @@ class EventRepository:
     
     events = Event.query.all()
     # print('filters',filters)
+
     filtered_events = [event for event in events if
                        (not filters['province'] or event.address.split(',')[3].strip()== filters['province']) and
                        (not filters['city'] or event.address.split(',')[2].strip() == filters['city']) and
                        (not filters['district'] or event.address.split(',')[1].strip() == filters['district'] ) and
                         (not filters['category'] or str(event.category_id) == filters['category']) and
-                        (not filters['date'] or event.date_of_event.date() == datetime.strptime(filters['date'], '%Y-%m-%d').date()) 
+                        (not filters['date'] or event.date_of_event.date() == datetime.strptime(filters['date'], '%Y-%m-%d').date()) and 
+                        (not filters['status'] or event.status == filters['status'])
+
+
                        ]
+    today = datetime.today().date()
+    if(filters['type'] == 'upcoming'):
+      filtered_events = [event for event in filtered_events if event.date_of_event.date() >= today]
+      
     return filtered_events
   def createNewEvent(self,title,description,price,date_of_event,number_of_ticket,user_id,poster_path,address,category_id):
     newEvent = Event(
