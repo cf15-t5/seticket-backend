@@ -14,7 +14,6 @@ class Event(db.Model):
   address= db.Column(db.Text)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
   category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
-  created_at = db.Column(db.Date, default=db.func.current_timestamp())
   
   
   def __init__(self, title, description, price, date_of_event, number_of_ticket,user_id,poster_path,address,category_id ):
@@ -45,7 +44,7 @@ class Event(db.Model):
           'user_id': self.user_id,
           'poster_path': self.poster_path,
           'status': self.status,
-          'category_id': self.category_id
+          'category_id': self.category_id,
       }
       
   def __iter__(self):
@@ -59,4 +58,4 @@ class Event(db.Model):
       yield 'poster_path', self.poster_path
       yield 'status', self.status
       yield 'category_id', self.category_id
-    
+      yield 'address', self.address
