@@ -46,3 +46,10 @@ class TicketService(Service):
           return self.failedOrSuccessRequest('failed', 400, errorHandler(e.errors()))
         except Exception as e:
             return self.failedOrSuccessRequest('failed', 500, str(e))
+        
+    def getTicketByUserId(self,user_id):
+        try:
+            data = ticketRepository.getAllTicketByUserId(user_id)
+            return self.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','event']))
+        except Exception as e:
+            return self.failedOrSuccessRequest('failed', 500, str(e))

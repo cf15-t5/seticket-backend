@@ -22,6 +22,14 @@ def store():
     return Response.error(result['data'],result['code'])
   return Response.success(result['data'],"success create new event")
 
+@TicketApp.route('/my', methods=['GET'])
+@isAuthenticated
+def myTicket():
+  result = ticketService.getTicketByUserId(g.user['user_id'])
+  if(result['status'] == 'failed'):
+    return Response.error(result['data'],result['code'])
+  return Response.success(result['data'],"success get all my ticket")
+
 
 @TicketApp.route('/<id>/delete', methods=['DELETE'])
 @isAuthenticated

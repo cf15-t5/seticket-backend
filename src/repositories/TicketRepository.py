@@ -19,4 +19,5 @@ class TicketRepository:
       )
     db.session.add(newTicket)
     db.session.commit()
-    return newTicket
+    return newTicket\
+      
