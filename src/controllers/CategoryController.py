@@ -8,7 +8,6 @@ CategoryApp = Blueprint('CategoryApp', __name__,)
 categoryService =  CategoryService()
 
 @CategoryApp.route('/', methods=['GET'])
-@isAuthenticated
 def index():
   
   result = categoryService.getAllCategories()
