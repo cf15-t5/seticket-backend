@@ -41,7 +41,7 @@ class TicketService(Service):
                 to=data.user.email
                 )
             
-            return self.failedOrSuccessRequest('success', 200, data.serialize())
+            return self.failedOrSuccessRequest('success', 200, queryResultToDict([data])[0])
         except ValueError as e:
           return self.failedOrSuccessRequest('failed', 400, errorHandler(e.errors()))
         except Exception as e:
