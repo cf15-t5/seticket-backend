@@ -8,7 +8,6 @@ EventApp = Blueprint('EventApp', __name__,)
 eventService =  EventService()
 
 @EventApp.route('/', methods=['GET'])
-@isAuthenticated
 def index():
   _filter ={
      "district" : request.args.get('district'),
