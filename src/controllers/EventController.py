@@ -17,6 +17,7 @@ def index():
     "category" : request.args.get('category'),
     "date" : request.args.get('date'),
     "status" : request.args.get('status'),
+    "type" : request.args.get('type'),
   }
   result = eventService.getAllEvent(_filter)
   return Response.success(result['data'],"success get all events")
