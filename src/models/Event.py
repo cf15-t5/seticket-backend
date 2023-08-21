@@ -14,7 +14,8 @@ class Event(db.Model):
   address= db.Column(db.Text)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
   category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
-  
+  category = db.relationship('Category', backref='events')
+  user = db.relationship('User', backref='events')
   
   def __init__(self, title, description, price, date_of_event, number_of_ticket,user_id,poster_path,address,category_id ):
     self.title= title
@@ -28,34 +29,3 @@ class Event(db.Model):
     self.category_id = category_id
     self.address = address
   
-  def __repr__(self):
-
-    return f"<Event (id={self.event_id}, title={self.title}, description={self.description}, price={self.price}, date_of_event={self.date_of_event}, number_of_tickets={self.number_of_ticket}, user_id={self.user_id}, poster_path={self.poster_path}, status={self.status},category_id={self.category_id})>"
-  
-  
-  def toDict(self):
-      return {
-          'event_id': self.event_id,
-          'title': self.title,
-          'description': self.description,
-          'price': self.price,
-          'date_of_event': self.date_of_event,
-          'number_of_tickets': self.number_of_ticket,
-          'user_id': self.user_id,
-          'poster_path': self.poster_path,
-          'status': self.status,
-          'category_id': self.category_id,
-      }
-      
-  def __iter__(self):
-      yield 'event_id', self.event_id
-      yield 'title', self.title
-      yield 'description', self.description
-      yield 'price', self.price
-      yield 'date_of_event', self.date_of_event
-      yield 'number_of_ticket', self.number_of_ticket
-      yield 'user_id', self.user_id
-      yield 'poster_path', self.poster_path
-      yield 'status', self.status
-      yield 'category_id', self.category_id
-      yield 'address', self.address

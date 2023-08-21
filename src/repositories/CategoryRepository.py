@@ -8,7 +8,7 @@ class CategoryRepository:
     newCategory = Category(name=data['name'])
     db.session.add(newCategory)
     db.session.commit()
-    return dict(newCategory)
+    return newCategory
   
   def getCategoryById(self,category_id):
     return Category.query.filter_by(category_id=category_id).first()
@@ -18,7 +18,7 @@ class CategoryRepository:
     if(not category) :return False
     category.name = data['name']
     db.session.commit()
-    return dict(category)
+    return category
   
   def deleteCategory(self,id):
     category = Category.query.filter_by(category_id=id).first()
