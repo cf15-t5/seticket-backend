@@ -46,5 +46,6 @@ jobs:
             export FLASK_APP=server.py
             git pull
             pip install -r requirement.txt
+            flask db upgrade
             pm2 restart seticket-backend
 
