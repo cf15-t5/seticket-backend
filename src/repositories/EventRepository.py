@@ -1,26 +1,25 @@
 from src.models.Event import Event,db
 from src.models.Category import Category,db
-
+from datetime import datetime
+import sys
 class EventRepository:
   def getAllEvent(self):
     return Event.query.all()  
   
   def getAllEventFiltered(self,filters):
-    query = Event.query
-
-    if 'address' in filters and filters['address']:
-        query = query.filter(Event.address.ilike(f"%{filters['address']}%"))
-
-    if 'date_of_event' in filters and filters['date_of_event']:
-        query = query.filter(Event.date_of_event >= filters['date_of_event'])
-
-    if 'category_name' in filters and filters['category_name']:
-        query = query.join(Category).filter(Category.name.ilike(f"%{filters['category_name']}%"))
-
-    if 'name' in filters and filters['name']:
-        query = query.filter(Event.name.ilike(f"%{filters['name']}%"))
-
-    return query.all()
+    
+    events = Event.query.all()
+    # print('filters',filters)
+    print('events',events[0].date_of_event)
+    date_datetime = datetime.strptime(filters['date'], '%Y-%m-%d')
+    filtered_events = [event for event in events if
+                       (not filters['province'] or event.address.split(',')[3].strip()== filters['province']) and
+                       (not filters['city'] or event.address.split(',')[2].strip() == filters['city']) and
+                       (not filters['district'] or event.address.split(',')[1].strip() == filters['district'] ) and
+                        (not filters['category'] or str(event.category_id) == filters['category']) and
+                        (not filters['date'] or event.date_of_event.date() == date_datetime.date()) 
+                       ]
+    return filtered_events
   def createNewEvent(self,title,description,price,date_of_event,number_of_ticket,user_id,poster_path,address,category_id):
     newEvent = Event(
       title=title, 

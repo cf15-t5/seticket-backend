@@ -4,7 +4,7 @@ from src.utils.convert import transformToDictList
 from src.services.Service import Service
 from src.utils.uploadFile import upload_file,delete_file
 from src.utils.validator.EventValidator import CreateNewEventValidator,UpdateEventValidator,DeleteEventValidator,VerifyEventValidator
-
+import sys
 from src.utils.errorHandler import errorHandler
 eventRepository = EventRepository()    
 
@@ -17,12 +17,15 @@ class EventService(Service):
             'data': data,
         }
     
-    def getAllEvent(self):
+    def getAllEvent(self,filter):
         try:
-            data = eventRepository.getAllEvent()
-            print(data)
+            if( any(value is not None for value in filter.values())):
+                data = eventRepository.getAllEventFiltered(filter)
+            else:
+                data = eventRepository.getAllEvent()
             return EventService.failedOrSuccessRequest('success', 200, transformToDictList(data))
         except Exception as e:
+            print(e)
             return EventService.failedOrSuccessRequest('failed', 500, str(e))
     
     def createEvent(self,data,file,user_id):

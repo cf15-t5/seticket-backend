@@ -10,7 +10,15 @@ eventService =  EventService()
 @EventApp.route('/', methods=['GET'])
 @isAuthenticated
 def index():
-  result = eventService.getAllEvent()
+  _filter ={
+     "district" : request.args.get('district'),
+    "city" : request.args.get('city'),
+    "province" : request.args.get('province'),
+    "category" : request.args.get('category'),
+    "date" : request.args.get('date'),
+    "status" : request.args.get('status'),
+  }
+  result = eventService.getAllEvent(_filter)
   return Response.success(result['data'],"success get all events")
 
 @EventApp.route('/', methods=['POST'])
