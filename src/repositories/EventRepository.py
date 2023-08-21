@@ -21,7 +21,7 @@ class EventRepository:
         query = query.filter(Event.name.ilike(f"%{filters['name']}%"))
 
     return query.all()
-  def createNewEvent(self,title,description,price,date_of_event,number_of_ticket,user_id,poster_path,address):
+  def createNewEvent(self,title,description,price,date_of_event,number_of_ticket,user_id,poster_path,address,category_id):
     newEvent = Event(
       title=title, 
       description=description,
@@ -30,7 +30,8 @@ class EventRepository:
       number_of_ticket=number_of_ticket,
       address=address,
       user_id=user_id,
-      poster_path=poster_path
+      poster_path=poster_path,
+      category_id=category_id
       )
     db.session.add(newEvent)
     db.session.commit()

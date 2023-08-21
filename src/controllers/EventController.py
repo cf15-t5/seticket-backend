@@ -26,7 +26,10 @@ def store():
 @EventApp.route('/verify', methods=['POST'])
 @isAuthenticated
 def verify():  
-  return Response.success([],"success verify user")
+  result = eventService.verifyEvent(request.json)
+  if(result['status'] == "failed"):
+    return Response.error(result['data'],result['code'])
+  return Response.success(result['data'],"success verify event")
 
 
 @EventApp.route('/<id>', methods=['PUT'])

@@ -3,7 +3,7 @@ from src.repositories.EventRepository import EventRepository
 from src.utils.convert import transformToDictList
 from src.services.Service import Service
 from src.utils.uploadFile import upload_file,delete_file
-from src.utils.validator.EventValidator import CreateNewEventValidator,UpdateEventValidator,DeleteEventValidator
+from src.utils.validator.EventValidator import CreateNewEventValidator,UpdateEventValidator,DeleteEventValidator,VerifyEventValidator
 
 from src.utils.errorHandler import errorHandler
 eventRepository = EventRepository()    
@@ -81,3 +81,15 @@ class EventService(Service):
             return EventService.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
         except Exception as e:
               return EventService.failedOrSuccessRequest('failed', 500, str(e))
+    def verifyEvent(self,data):
+        try:
+            
+            validate= VerifyEventValidator(**data)
+            if(not validate):
+                return self.failedOrSuccessRequest('failed',400,'Validation Error')
+            eventRepository.updateStatus(event_id=data['id'],status=data['status'])
+            return self.failedOrSuccessRequest('sucess',200,"Event Sucess Verified")
+        except ValueError as e:
+            return self.failedOrSuccessRequest('failed',400,errorHandler(e.errors()))
+        except Exception as e:
+            return self.failedOrSuccessRequest('failed',400,str(e))

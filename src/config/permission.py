@@ -9,6 +9,7 @@ admin_permission=[
   '/auth/verify',
   '/users/',
   '/categories/*',
+  '/events/verify',
 ]
 
 user_permission=[
