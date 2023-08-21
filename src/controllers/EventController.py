@@ -10,7 +10,15 @@ eventService =  EventService()
 @EventApp.route('/', methods=['GET'])
 @isAuthenticated
 def index():
-  result = eventService.getAllEvent()
+  _filter ={
+     "district" : request.args.get('district'),
+    "city" : request.args.get('city'),
+    "province" : request.args.get('province'),
+    "category" : request.args.get('category'),
+    "date" : request.args.get('date'),
+    "status" : request.args.get('status'),
+  }
+  result = eventService.getAllEvent(_filter)
   return Response.success(result['data'],"success get all events")
 
 @EventApp.route('/', methods=['POST'])
@@ -26,7 +34,10 @@ def store():
 @EventApp.route('/verify', methods=['POST'])
 @isAuthenticated
 def verify():  
-  return Response.success([],"success verify user")
+  result = eventService.verifyEvent(request.json)
+  if(result['status'] == "failed"):
+    return Response.error(result['data'],result['code'])
+  return Response.success(result['data'],"success verify event")
 
 
 @EventApp.route('/<id>', methods=['PUT'])

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-
+from enum import Enum
 class CreateNewEventValidator(BaseModel):
   title: str
   price: int
@@ -33,3 +33,12 @@ class VerifyEventValidator(BaseModel):
 
 class DeleteEventValidator(BaseModel):
   id:str
+  
+  
+class STATUS(str,Enum):
+  APPROVED="APPROVED"
+  REJECTED="REJECTED"
+  
+class VerifyEventValidator(BaseModel):
+  id:int
+  status:STATUS
