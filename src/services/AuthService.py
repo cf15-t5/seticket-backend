@@ -3,6 +3,7 @@ from src.utils.errorHandler import errorHandler
 from src.repositories.UserRepository import UserRepository
 import bcrypt
 import src.utils.jwt as jwt 
+from src.utils.convert import queryResultToDict
 user_repository = UserRepository()    
 from  src.services.Service import Service
 class AuthService(Service):
@@ -26,7 +27,7 @@ class AuthService(Service):
             
             newUser = user_repository.createNewUser(data)
             
-            return self.failedOrSuccessRequest('success', 201, newUser)
+            return self.failedOrSuccessRequest('success', 201, queryResultToDict([newUser])[0])
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
         
@@ -37,12 +38,14 @@ class AuthService(Service):
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
             
             user = user_repository.getUserByEmail(data['email'])
+            if not user:
+                return self.failedOrSuccessRequest('failed', 400, 'user not found')
             isPasswordMatch = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8') )
             if not user or not isPasswordMatch:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
             print(user.status)
             if(user.status == 'INACTIVE'):return  self.failedOrSuccessRequest('failed', 400, 'user not verified')
-            user_dict = dict(user)
+            user_dict = queryResultToDict([user])[0]
             
             user_dict['token'] = jwt.encode(user_dict)
             return self.failedOrSuccessRequest('success', 200,user_dict)
@@ -57,7 +60,7 @@ class AuthService(Service):
             
             user.status = 'ACTIVE'
             user_repository.commit()
-            return self.failedOrSuccessRequest('success', 200, dict(user))
+            return self.failedOrSuccessRequest('success', 200, queryResultToDict([user])[0])
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
     def verify(self,data):
@@ -68,6 +71,6 @@ class AuthService(Service):
             user = user_repository.verifyUser(data['user_id'])
             if not user:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
-            return self.failedOrSuccessRequest('success', 200, dict(user))
+            return self.failedOrSuccessRequest('success', 200, queryResultToDict([user])[0])
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))

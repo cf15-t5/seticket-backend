@@ -40,22 +40,24 @@ class EventRepository:
       )
     db.session.add(newEvent)
     db.session.commit()
-    return dict(newEvent)
+    return newEvent
   
   def getEventById(self,event_id):
     return Event.query.filter_by(event_id=event_id).first()
   
-  def updateEvent(self,event_id,title,description,price,date_of_event,number_of_tickets,poster_path):
+  def updateEvent(self,event_id,title,description,price,date_of_event,number_of_ticket,poster_path,address,category_id):
     event = Event.query.filter_by(event_id=event_id).first()
     if(not event) :return False
     event.title = title
+    event.address = address
+    event.category_id = category_id
     event.description = description
     event.price = price
     event.date_of_event = date_of_event
-    event.number_of_ticket = number_of_tickets
+    event.number_of_ticket = number_of_ticket
     event.poster_path = poster_path
     db.session.commit()
-    return dict(event)
+    return event
   
   def deleteEvent(self,event_id):
     event = Event.query.filter_by(event_id=event_id).first()
@@ -69,7 +71,7 @@ class EventRepository:
     if(not event) :return False
     event.status = status
     db.session.commit()
-    return dict(event)
+    return event
   
   def getAllEventByUserId(self,user_id):
     return Event.query.filter_by(user_id=user_id).all()

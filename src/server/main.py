@@ -1,12 +1,14 @@
-from flask import Flask
+from flask import Flask,g
 from flask_cors import CORS
 from flask_migrate import Migrate
 from src.config.config import BASE_URL, PORT, DEBUG
+from src.config.mail import mailConfig
 from src.config.database import database
 
-main_app = Flask(__name__,static_folder='../../public', static_url_path='/')
-
+main_app = Flask(__name__,static_folder='../../public', static_url_path='/',template_folder='../../templates')
+mail = mailConfig(main_app)
 CORS(main_app)
+
 db = database(main_app)
 migrate = Migrate(main_app, db)
 

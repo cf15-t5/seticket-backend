@@ -9,18 +9,3 @@ class Category(db.Model):
   def __init__(self,name ):
     self.name = name
   
-  def __repr__(self):
-
-    return f"<Event (id={self.event_id}, name={self.name})>"
-  
-  
-  def toDict(self):
-      return {
-          'category_id': self.category_id,
-          'name': self.name,
-      }
-      
-  def __iter__(self):
-      yield 'category_id', self.category_id
-      yield 'name', self.name
-    
