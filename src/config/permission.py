@@ -3,6 +3,7 @@ all_user_permission=[
   '/auth/logout',
   '/categories',
   '/events/',
+  '/tickets/'
 ]
 
 admin_permission=[

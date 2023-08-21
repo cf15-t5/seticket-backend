@@ -10,7 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(255))
     balance = db.Column(db.Float, default=0)
     status = db.Column(db.String(255), default='INACTIVE')
-    
+    tickets = db.relationship('Ticket', back_populates='user')
     def __init__(self, email, name, role, password,  status, balance =0):
         self.name = name
         self.email = email
@@ -18,25 +18,6 @@ class User(db.Model):
         self.password = password
         self.balance = balance
         self.status = status
-    
-    def __repr__(self):
-        return f"<User(id={self.user_id}, email={self.email}, name={self.name}, role={self.role}, balance={self.balance}, status={self.status})>"    
-    
-    
-    def toDict(self):
-        return {
-            'user_id': self.user_id,
-            'email': self.email,
-            'name': self.name,
-            'role': self.role,
-            'balance': self.balance,
-            'status': self.status
-        }
-        
-    def __iter__(self):
-        yield 'user_id', self.user_id
-        yield 'email', self.email
-        yield 'name', self.name
-        yield 'role', self.role
-        yield 'balance', self.balance
-        yield 'status', self.status
+    # def __repr__(self):
+        # return '<User %r>' % self.name
+  

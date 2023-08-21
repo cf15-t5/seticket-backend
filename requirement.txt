@@ -9,3 +9,4 @@ pydantic[email]==2.1.1
 werkzeug==2.3.3
 pyjwt==2.8.0
 Flask-Migrate==4.0.4
+Flask-Mail==0.9.1

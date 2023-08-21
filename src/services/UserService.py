@@ -1,6 +1,6 @@
 
 from src.repositories.UserRepository import UserRepository
-from src.utils.convert import transformToDictList
+from src.utils.convert import queryResultToDict
 from src.services.Service import Service
 userRepository = UserRepository()    
 
@@ -16,7 +16,7 @@ class UserService(Service):
     def getAllUser(self):
         try:
             data = userRepository.getAllUser()
-            return UserService.failedOrSuccessRequest('success', 200, transformToDictList(data))
+            return UserService.failedOrSuccessRequest('success', 200, queryResultToDict(data))
         except Exception as e:
             return UserService.failedOrSuccessRequest('failed', 500, str(e))
     

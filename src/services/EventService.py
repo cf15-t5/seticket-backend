@@ -1,6 +1,6 @@
 
 from src.repositories.EventRepository import EventRepository
-from src.utils.convert import transformToDictList
+from src.utils.convert import queryResultToDict
 from src.services.Service import Service
 from src.utils.uploadFile import upload_file,delete_file
 from src.utils.validator.EventValidator import CreateNewEventValidator,UpdateEventValidator,DeleteEventValidator,VerifyEventValidator
@@ -23,7 +23,7 @@ class EventService(Service):
                 data = eventRepository.getAllEventFiltered(filter)
             else:
                 data = eventRepository.getAllEvent()
-            return EventService.failedOrSuccessRequest('success', 200, transformToDictList(data))
+            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','category']))
         except Exception as e:
             print(e)
             return EventService.failedOrSuccessRequest('failed', 500, str(e))
@@ -38,7 +38,7 @@ class EventService(Service):
                 return EventService.failedOrSuccessRequest('failed', 400, 'poster is required')
             poster = upload_file(file['poster'])
             newEvent = eventRepository.createNewEvent(**data,poster_path=poster,user_id=user_id)
-            return EventService.failedOrSuccessRequest('success', 201, newEvent)
+            return EventService.failedOrSuccessRequest('success', 201, queryResultToDict([newEvent])[0])
         except ValueError as e:
             return EventService.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
         except Exception as e:
@@ -52,19 +52,18 @@ class EventService(Service):
           if not event:
             return EventService.failedOrSuccessRequest('failed', 404, 'Event not found')
           data_dict = data.to_dict()
-          event_copied = event.toDict().copy()
+          event_copied = queryResultToDict([event])[0]
           
           if file:
-            delete_file(event['poster_path'])
+            print(event)
             event_copied['poster_path'] = upload_file(file['poster'])
           event_copied.update(data_dict)
           event_copied.pop('user_id')
           event_copied.pop('status')
           
-          print('event',event_copied)
-          
+          print(event_copied,file=sys.stderr)
           eventUpdated = eventRepository.updateEvent(**event_copied)
-          return EventService.failedOrSuccessRequest('success', 201, eventUpdated)
+          return EventService.failedOrSuccessRequest('success', 201, queryResultToDict([eventUpdated])[0])
         except ValueError as e:
             return EventService.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
         except Exception as e:
