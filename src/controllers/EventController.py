@@ -9,7 +9,6 @@ EventApp = Blueprint('EventApp', __name__,)
 eventService =  EventService()
 
 @EventApp.route('/', methods=['GET'])
-@cross_origin(supports_credentials=True)
 def index():
   _filter ={
      "district" : request.args.get('district'),
