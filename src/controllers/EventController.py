@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask import request,g
+from flask_cors import cross_origin
 from src.services.EventService import EventService
 from src.middlewares.AuthMiddleware import isAuthenticated
 import src.utils.getResponse as Response  
@@ -8,6 +9,7 @@ EventApp = Blueprint('EventApp', __name__,)
 eventService =  EventService()
 
 @EventApp.route('/', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def index():
   _filter ={
      "district" : request.args.get('district'),
@@ -21,6 +23,13 @@ def index():
   result = eventService.getAllEvent(_filter)
   return Response.success(result['data'],"success get all events")
 
+@EventApp.route('/<id>', methods=['GET'])
+def detail(id):
+  result = eventService.getEventById(id)
+  if(result['status'] == 'failed'):
+    return Response.error(result['data'],result['code'])
+  
+  return Response.success(result['data'],"success get event by id")
 @EventApp.route('/', methods=['POST'])
 @isAuthenticated
 def store():
@@ -39,7 +48,11 @@ def verify():
     return Response.error(result['data'],result['code'])
   return Response.success(result['data'],"success verify event")
 
-
+@EventApp.route('/my', methods=['GET'])
+@isAuthenticated
+def getMyEvent():
+  result = eventService.getMyEvent(user_id=g.user['user_id'])
+  return Response.success(result['data'],"success get my event")
 @EventApp.route('/<id>', methods=['PUT'])
 @isAuthenticated
 def update(id):
@@ -58,3 +71,4 @@ def delete(id):
     return Response.error(result['data'],result['code'])
   
   return Response.success(result['data'],"success delete event")
+

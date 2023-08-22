@@ -3,7 +3,11 @@ all_user_permission=[
   '/auth/logout',
   '/categories',
   '/events/',
-  '/tickets/'
+  '/tickets/',
+  '/users/update-profile',
+  '/users/topup',
+  '/users/withdraw',
+
 ]
 
 admin_permission=[
@@ -14,11 +18,13 @@ admin_permission=[
 ]
 
 user_permission=[
+  
 ]
 
 event_organizer_permission=[
   '/events/*',
   '!/events/verify',
+  
 
 ]
 permissions = {
