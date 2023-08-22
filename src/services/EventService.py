@@ -27,7 +27,15 @@ class EventService(Service):
         except Exception as e:
             print(e)
             return EventService.failedOrSuccessRequest('failed', 500, str(e))
-    
+    def getEventById(self,id):
+        try:
+            event = eventRepository.getEventById(id)
+            if not event:
+                return EventService.failedOrSuccessRequest('failed', 404, 'Event not found')
+            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict([event],['user','category'])[0])
+        except Exception as e:
+            return EventService.failedOrSuccessRequest('failed', 500, str(e))
+        
     def createEvent(self,data,file,user_id):
         try:
             
@@ -95,3 +103,9 @@ class EventService(Service):
             return self.failedOrSuccessRequest('failed',400,errorHandler(e.errors()))
         except Exception as e:
             return self.failedOrSuccessRequest('failed',400,str(e))
+    def getMyEvent(self,user_id):
+        try:
+            data = eventRepository.getAllEventByUserId(user_id)
+            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','category']))
+        except Exception as e:
+            return EventService.failedOrSuccessRequest('failed', 500, str(e))

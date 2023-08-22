@@ -1,5 +1,7 @@
 
 from src.repositories.TicketRepository import TicketRepository
+from src.repositories.UserRepository import UserRepository
+from src.repositories.EventRepository import EventRepository
 from src.utils.convert import queryResultToDict
 from src.services.Service import Service
 from src.utils.validator.TicketValidator import CreateNewTicketValidator
@@ -7,6 +9,8 @@ from src.utils.errorHandler import errorHandler
 from src.utils.sendMail import sendMail
 
 ticketRepository = TicketRepository()    
+userRepository = UserRepository()
+eventRepository = EventRepository()
 
 class TicketService(Service):
     @staticmethod
@@ -29,7 +33,15 @@ class TicketService(Service):
             validate = CreateNewTicketValidator(**data)
             if(not validate):
                 return self.failedOrSuccessRequest('failed', 400, validate.errors())
-              
+            
+            user = userRepository.getUserById(user_id)
+            event = eventRepository.getEventById(data['event_id'])
+            if(not event):
+                return self.failedOrSuccessRequest('failed', 400, 'event not found')
+            if user.balance < event.price:
+                return self.failedOrSuccessRequest('failed', 400, 'balance not enough')
+            userRepository.updateBalance(id=user_id,nominal=event.price,operator='minus')
+            userRepository.updateBalance(id=event.user_id,nominal=event.price,operator='plus')
             data = ticketRepository.createNewTicket(data,user_id)
             sendMail(
                 name=data.user.name,
