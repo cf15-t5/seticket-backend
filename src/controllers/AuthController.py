@@ -37,7 +37,8 @@ def me():
 @AuthApp.route('/verify', methods=['post'])
 @isAuthenticated
 def verify():  
-  req = request
+  req = request.json
+  
   result = authService.verify(req)
   if(result['status'] == 'failed'):
    return Response.error(result['data'],result['code'])

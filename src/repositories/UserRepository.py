@@ -22,10 +22,10 @@ class UserRepository:
     return newUser
   def getUserById(self,user_id):
     return User.query.filter_by(user_id=user_id).first()
-  def verifyUser(self,user_id):
+  def verifyUser(self,user_id,status):
     user = User.query.filter_by(user_id=user_id).first()
     if(not user) :return False
-    user.status = 'ACTIVE'
+    user.status = status
     db.session.commit()
     return user
   def updateProfile(self,id,data):
