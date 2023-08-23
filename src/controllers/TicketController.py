@@ -39,3 +39,13 @@ def delete(id):
     return Response.error(result['data'],result['code'])
   
   return Response.success(result['data'],"success delete event")
+
+@TicketApp.route('/attend', methods=['PUT'])
+@isAuthenticated
+def verify():
+  
+  result = ticketService.attendTicket(request.json,g.user['user_id'])
+  if(result['status'] == 'failed'):
+    return Response.error(result['data'],result['code'])
+  
+  return Response.success(result['data'],"success verify ticket")
