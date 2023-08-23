@@ -23,7 +23,13 @@ class EventService(Service):
                 data = eventRepository.getAllEventFiltered(filter)
             else:
                 data = eventRepository.getAllEvent()
-            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','category']))
+            # add ticket count to each event
+            data_dict = queryResultToDict(data,['user','category','tickets'])
+            for event in data_dict:
+                event['ticket_count'] = len(event['tickets'])
+                event['attendances_count'] =  len([ticket for ticket in event['tickets'] if ticket['is_attended']])
+                event.pop('tickets')
+            return EventService.failedOrSuccessRequest('success', 200,data_dict )
         except Exception as e:
             print(e)
             return EventService.failedOrSuccessRequest('failed', 500, str(e))

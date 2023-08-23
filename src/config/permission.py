@@ -24,7 +24,7 @@ user_permission=[
 event_organizer_permission=[
   '/events/*',
   '!/events/verify',
-  
+  '/tickets/attend',
 
 ]
 permissions = {

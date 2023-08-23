@@ -16,7 +16,6 @@ class Event(db.Model):
   category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
   category = db.relationship('Category', backref='events')
   user = db.relationship('User', backref='events')
-  
   def __init__(self, title, description, price, date_of_event, number_of_ticket,user_id,poster_path,address,category_id ):
     self.title= title
     self.description = description

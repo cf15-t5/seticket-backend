@@ -19,5 +19,12 @@ class TicketRepository:
       )
     db.session.add(newTicket)
     db.session.commit()
-    return newTicket\
-      
+    return newTicket
+  def attendTicket(self,code):
+    ticket = Ticket.query.filter_by(ticket_code=code).first()
+    if(not ticket) :return False
+    ticket.is_attended = True
+    db.session.commit()
+    return ticket
+  def getTicketByCode(self,code):
+    return Ticket.query.filter_by(ticket_code=code).first()
