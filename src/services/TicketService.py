@@ -2,6 +2,7 @@
 from src.repositories.TicketRepository import TicketRepository
 from src.repositories.UserRepository import UserRepository
 from src.repositories.EventRepository import EventRepository
+from src.repositories.TransactionRepository import TransactionRepository
 from src.utils.convert import queryResultToDict
 from src.services.Service import Service
 from src.utils.validator.TicketValidator import CreateNewTicketValidator,AttendTicketValidator
@@ -12,6 +13,7 @@ from datetime import datetime
 ticketRepository = TicketRepository()    
 userRepository = UserRepository()
 eventRepository = EventRepository()
+transactionRepository = TransactionRepository()
 
 class TicketService(Service):
     @staticmethod
@@ -52,6 +54,12 @@ class TicketService(Service):
             userRepository.updateBalance(id=user_id,nominal=event.price,operator='minus')
             userRepository.updateBalance(id=event.user_id,nominal=event.price,operator='plus')
             data = ticketRepository.createNewTicket(data,user_id)
+            transactionRepository.createNewTransaction(
+                type='buy',
+                user_id=user_id,
+                nominal=event.price,
+                ticket_id=data.ticket_id
+                )
             sendMail(
                 name=data.user.name,
                 code=data.ticket_code,

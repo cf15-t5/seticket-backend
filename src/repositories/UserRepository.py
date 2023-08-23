@@ -8,7 +8,6 @@ class UserRepository:
   def getUserByEmail(self,email):
     return User.query.filter_by(email=email).first()
   def createNewUser(self,data):
-    print(data,file=sys.stderr) 
     password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
     newUser = User(
       name=data['name'], 
