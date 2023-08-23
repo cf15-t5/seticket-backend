@@ -1,11 +1,12 @@
 
 from src.repositories.UserRepository import UserRepository
+from src.repositories.TransactionRepository import TransactionRepository
 from src.utils.errorHandler import errorHandler
 from src.utils.validator.UserValidator import UpdateProfileValidator,UpdateBalanceValidator
 from src.utils.convert import queryResultToDict
 from src.services.Service import Service
 userRepository = UserRepository()    
-
+transactionRepository = TransactionRepository()
 class UserService(Service):
     @staticmethod
     def failedOrSuccessRequest(status, code, data):
@@ -39,6 +40,11 @@ class UserService(Service):
             if not validate:
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
             user = userRepository.updateBalance(id=id,nominal=data['nominal'],operator='plus')
+            transactionRepository.createNewTransaction(
+                type='topup',
+                user_id=id,
+                nominal=data['nominal']
+                )
             return self.failedOrSuccessRequest('success', 200, queryResultToDict([user])[0])
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
@@ -49,10 +55,16 @@ class UserService(Service):
             if not validate:
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
             user = userRepository.getUserById(user_id=id)
+            
             if(user.balance < data['nominal']):
                 return self.failedOrSuccessRequest('failed', 400, 'balance not enough')
             
             user = userRepository.updateBalance(id=id,nominal=data['nominal'],operator='minus')
+            transactionRepository.createNewTransaction(
+                type='withdraw',
+                user_id=id,
+                nominal=data['nominal']
+                )
             return self.failedOrSuccessRequest('success', 200, queryResultToDict([user])[0])
         except ValueError as e:
             return self.failedOrSuccessRequest('failed', 500, errorHandler(e.errors()))
