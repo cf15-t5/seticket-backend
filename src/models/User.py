@@ -11,6 +11,7 @@ class User(db.Model):
     balance = db.Column(db.Float, default=0)
     status = db.Column(db.String(255), default='INACTIVE')
     tickets = db.relationship('Ticket', back_populates='user')
+    transactions = db.relationship('Transaction', back_populates='user')
     def __init__(self, email, name, role, password,  status, balance =0):
         self.name = name
         self.email = email
