@@ -42,7 +42,7 @@ class EventService(Service):
             event = eventRepository.getEventById(id)
             if not event:
                 return EventService.failedOrSuccessRequest('failed', 404, 'Event not found')
-            data_dict = queryResultToDict([event],['user','category'])[0]
+            data_dict = queryResultToDict([event],['user','category','tickets'])[0]
             result = self._count_ticket_and_attendace([data_dict])[0]
             return EventService.failedOrSuccessRequest('success', 200, result)
         except Exception as e:
