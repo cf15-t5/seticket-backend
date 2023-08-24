@@ -2,6 +2,8 @@ from src.utils.validator.AuthValidator import RegisterValidator, LoginValidator,
 from src.utils.errorHandler import errorHandler
 from src.repositories.UserRepository import UserRepository
 import bcrypt
+from flask import render_template
+from src.utils.sendMail import sendMail
 import src.utils.jwt as jwt 
 from src.utils.convert import queryResultToDict
 user_repository = UserRepository()    
@@ -14,6 +16,18 @@ class AuthService(Service):
             "code": code,
             'data': data,
         }
+    def _sendNotification(self,data):
+        templates = render_template(
+                'html/registeredEoNotification.html',
+                name=data.name,
+                email=data.email,
+                )
+        sendMail(
+            templates=templates,
+            subject="Ticket Event",
+            to=data.user.email
+            )
+        return True
     
     def registerUser(self, data):
         try:
@@ -24,8 +38,9 @@ class AuthService(Service):
             validate = RegisterValidator(**data)
             if not validate:
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
-            
             newUser = user_repository.createNewUser(data)
+            if(newUser.role == 'EVENT_ORGANIZER'):
+                self._sendNotification(newUser)
             
             return self.failedOrSuccessRequest('success', 201, queryResultToDict([newUser])[0])
         except ValueError as e:
