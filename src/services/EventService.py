@@ -17,6 +17,12 @@ class EventService(Service):
             'data': data,
         }
     
+    def _count_ticket_and_attendace(self,events:list):
+        for event in events:
+                event['ticket_count'] = len(event['tickets'])
+                event['attendances_count'] =  len([ticket for ticket in event['tickets'] if ticket['is_attended']])
+                event.pop('tickets')
+        return events
     def getAllEvent(self,filter):
         try:
             if( any(value is not None for value in filter.values())):
@@ -25,11 +31,9 @@ class EventService(Service):
                 data = eventRepository.getAllEvent()
             # add ticket count to each event
             data_dict = queryResultToDict(data,['user','category','tickets'])
-            for event in data_dict:
-                event['ticket_count'] = len(event['tickets'])
-                event['attendances_count'] =  len([ticket for ticket in event['tickets'] if ticket['is_attended']])
-                event.pop('tickets')
-            return EventService.failedOrSuccessRequest('success', 200,data_dict )
+            result = self._count_ticket_and_attendace(data_dict)
+            
+            return EventService.failedOrSuccessRequest('success', 200,result )
         except Exception as e:
             print(e)
             return EventService.failedOrSuccessRequest('failed', 500, str(e))
@@ -38,7 +42,9 @@ class EventService(Service):
             event = eventRepository.getEventById(id)
             if not event:
                 return EventService.failedOrSuccessRequest('failed', 404, 'Event not found')
-            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict([event],['user','category'])[0])
+            data_dict = queryResultToDict([event],['user','category','tickets'])[0]
+            result = self._count_ticket_and_attendace([data_dict])[0]
+            return EventService.failedOrSuccessRequest('success', 200, result)
         except Exception as e:
             return EventService.failedOrSuccessRequest('failed', 500, str(e))
         
@@ -69,13 +75,11 @@ class EventService(Service):
           event_copied = queryResultToDict([event])[0]
           
           if file:
-            print(event)
             event_copied['poster_path'] = upload_file(file['poster'])
           event_copied.update(data_dict)
           event_copied.pop('user_id')
           event_copied.pop('status')
           
-          print(event_copied,file=sys.stderr)
           eventUpdated = eventRepository.updateEvent(**event_copied)
           return EventService.failedOrSuccessRequest('success', 201, queryResultToDict([eventUpdated])[0])
         except ValueError as e:
@@ -112,6 +116,9 @@ class EventService(Service):
     def getMyEvent(self,user_id):
         try:
             data = eventRepository.getAllEventByUserId(user_id)
-            return EventService.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','category']))
+            data_dict = queryResultToDict(data,['user','category','tickets'])
+            result = self._count_ticket_and_attendace(data_dict)
+            
+            return EventService.failedOrSuccessRequest('success', 200,result)
         except Exception as e:
             return EventService.failedOrSuccessRequest('failed', 500, str(e))

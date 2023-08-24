@@ -30,7 +30,6 @@ def isAuthenticated(func):
                     return response.error(
                         message="Forbidden", errors=None, status_code=403
                     )
-                print(user)
                 g.user = queryResultToDict([user])[0]
                 return func(*args, **kwargs)
             except jwt.jwt.InvalidKeyError as e:

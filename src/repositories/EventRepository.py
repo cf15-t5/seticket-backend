@@ -9,7 +9,6 @@ class EventRepository:
   def getAllEventFiltered(self,filters):
     
     events = Event.query.all()
-    # print('filters',filters)
 
     filtered_events = [event for event in events if
                        (not filters['province'] or event.address.split(',')[3].strip()== filters['province']) and

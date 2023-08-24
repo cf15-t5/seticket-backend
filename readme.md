@@ -9,8 +9,6 @@
 
 [![SQLAlchemy](https://img.shields.io/badge/Prisma-lastest-green.svg)](https://www.SQLAlchemy.io/)
 
-## Project Description
-
 ## How to Install and Run the Project
 To install and run the SeTicket project locally, please follow these steps:
 
@@ -44,7 +42,20 @@ To run this project, you will need to add the following environment variables to
 
 `DATABASE_URL`
 `BASE_URL`
+`DEBUG`
 `PORT`
+`JWT_ACCESS_TOKEN_EXPIRES`
+`JWT_ACCESS_TOKEN_SECRET`
+`JWT_ACCESS_TOKEN_ALGORITHM`
+`PORT`
+`MAIL_SERVER`
+`MAIL_PORT`
+`MAIL_USERNAME`
+`MAIL_PASSWORD`
+`MAIL_USE_TLS`
+`MAIL_USE_SSL`
+
+for setup the email service, you must configure email and app password in .env, for get the  app password you can stup 2fa first in your email and inside 2fa on bottom you get the app password
 
 export FLASK_APP on windows
 ```bash
@@ -54,8 +65,16 @@ or on (mac/linux)
 ```bash
     export FLASK_APP=main.py
 ```
+run the migration 
+```bash
+   flask db upgrade
+```
 Run the development server.
 ```bash
   flask run
+```
+or 
+```bash
+  flask --app=main.py run
 ```
 Access the website locally at http://localhost:5000.

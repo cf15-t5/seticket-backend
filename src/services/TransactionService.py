@@ -17,7 +17,6 @@ class TransactionService(Service):
     def getAllTransactions(self):
         try:
             data = TransactionRepository.getAllTransaction()
-            print(data)
             return self.failedOrSuccessRequest('success', 200, queryResultToDict(data,['user','ticket']))
         except Exception as e:
             return self.failedOrSuccessRequest('failed', 500, str(e))

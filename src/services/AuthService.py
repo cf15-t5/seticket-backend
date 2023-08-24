@@ -43,7 +43,6 @@ class AuthService(Service):
             isPasswordMatch = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8') )
             if not user or not isPasswordMatch:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
-            print(user.status)
             if(user.status == 'INACTIVE'):return  self.failedOrSuccessRequest('failed', 400, 'user not verified')
             user_dict = queryResultToDict([user])[0]
             
@@ -68,7 +67,7 @@ class AuthService(Service):
             validate = VerifyValidator(**data)
             if not validate:
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
-            user = user_repository.verifyUser(data['user_id'])
+            user = user_repository.verifyUser(data['user_id'],data['status'])
             if not user:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
             return self.failedOrSuccessRequest('success', 200, queryResultToDict([user])[0])

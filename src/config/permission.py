@@ -7,7 +7,7 @@ all_user_permission=[
   '/users/update-profile',
   '/users/topup',
   '/users/withdraw',
-
+  '/transactions/my'
 ]
 
 admin_permission=[
@@ -15,6 +15,7 @@ admin_permission=[
   '/users/',
   '/categories/*',
   '/events/verify',
+  '/transactions/*'
 ]
 
 user_permission=[
