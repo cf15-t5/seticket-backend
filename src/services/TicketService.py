@@ -9,6 +9,7 @@ from src.utils.validator.TicketValidator import CreateNewTicketValidator,AttendT
 from src.utils.errorHandler import errorHandler
 from src.utils.sendMail import sendMail
 from datetime import datetime
+from flask import render_template
 
 ticketRepository = TicketRepository()    
 userRepository = UserRepository()
@@ -23,7 +24,50 @@ class TicketService(Service):
             "code": code,
             'data': data,
         }
-    
+    def _validationCreateNewTicket(self,event,user):
+        if(not event):
+            return self.failedOrSuccessRequest('failed', 400, 'event not found')
+        if (len(event.tickets) >= event.number_of_ticket):
+            return self.failedOrSuccessRequest('failed', 400, 'ticket sold out')
+        today = datetime.today()
+        if (event.date_of_event.date() < today.date()):
+            return self.failedOrSuccessRequest('failed', 400, 'event has passed')
+        if([item for item in event.tickets if item.user_id ==user.user_id]):
+            return self.failedOrSuccessRequest('failed', 400, 'you already have ticket for this event')
+        if user.balance < event.price:
+            return self.failedOrSuccessRequest('failed', 400, 'balance not enough')
+        return True
+    def _purchaseTicket(self,data):
+         date = data.event.date_of_event
+         event_date = date.strftime("%d %B %Y")
+         event_time = date.strftime("%H:%M") 
+         return render_template(
+                'html/mail.html',
+                code=data.ticket_code,
+                event_name=data.event.title,
+                location=data.event.address,
+                name=data.user.name,
+                date=event_date,
+                time=event_time)
+    def _soldOutEvent(self,data):
+        return render_template(
+                'html/soldOutEventNotification.html',
+                event_name=data.title,
+                location=data.address,
+                event_date=data.date_of_event.strftime("%d %B %Y"),
+                event_time=data.date_of_event.strftime("%H:%M"),
+                ticket_count=len(data.tickets),
+                category=data.category.name,
+                name=data.user.name,
+                image_url=f"https://api-seticket.aprnna.me/{data.poster_path.replace('public/','')}"
+                )
+    def _sendNotification(self,templates,to,subject):
+         sendMail(
+            templates=templates,
+            subject=subject,
+            to=to
+            )
+         return True
     def getAllTickets(self):
         try:
             data = ticketRepository.getAllTickets()
@@ -34,23 +78,14 @@ class TicketService(Service):
     def createNewTicket(self,data,user_id):
         try:
             validate = CreateNewTicketValidator(**data)
+            
             if(not validate):
                 return self.failedOrSuccessRequest('failed', 400, validate.errors())
-            
-            user = userRepository.getUserById(user_id)
             event = eventRepository.getEventById(data['event_id'])
-            if(not event):
-                return self.failedOrSuccessRequest('failed', 400, 'event not found')
-            if (len(event.tickets) >= event.number_of_ticket):
-                return self.failedOrSuccessRequest('failed', 400, 'ticket sold out')
-            today = datetime.today()
-            if (event.date_of_event.date() < today.date()):
-                return self.failedOrSuccessRequest('failed', 400, 'event has passed')
-            if([item for item in event.tickets if item.user_id ==user_id]):
-                return self.failedOrSuccessRequest('failed', 400, 'you already have ticket for this event')
-                
-            if user.balance < event.price:
-                return self.failedOrSuccessRequest('failed', 400, 'balance not enough')
+            user = userRepository.getUserById(user_id)
+            
+            validation = self._validationCreateNewTicket(event,user)
+            if(validation != True): return validation
             userRepository.updateBalance(id=user_id,nominal=event.price,operator='minus')
             userRepository.updateBalance(id=event.user_id,nominal=event.price,operator='plus')
             data = ticketRepository.createNewTicket(data,user_id)
@@ -60,15 +95,12 @@ class TicketService(Service):
                 nominal=event.price,
                 ticket_id=data.ticket_id
                 )
-            sendMail(
-                name=data.user.name,
-                code=data.ticket_code,
-                date=data.event.date_of_event,
-                event_name=data.event.title,
-                location=data.event.address,
-                subject="Ticket Event",
-                to=data.user.email
-                )
+            # if():
+            # print()
+            if(len(event.tickets) >= event.number_of_ticket-1):
+                
+                self._sendNotification(subject="Event Sold Out" , templates=self._soldOutEvent(event),to=event.user.email)
+            self._sendNotification(subject="Ticket Event",templates=self._purchaseTicket(data),to=user.email)
             
             return self.failedOrSuccessRequest('success', 200, queryResultToDict([data])[0])
         except ValueError as e:
