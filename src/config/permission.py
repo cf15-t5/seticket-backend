@@ -15,8 +15,7 @@ admin_permission=[
   '/users/',
   '/categories/*',
   '/events/verify',
-  '/transactions/'
-  '/transaction/*'
+  '/transactions/*'
 ]
 
 user_permission=[
