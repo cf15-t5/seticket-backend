@@ -43,7 +43,6 @@ class AuthService(Service):
             isPasswordMatch = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8') )
             if not user or not isPasswordMatch:
                 return self.failedOrSuccessRequest('failed', 400, 'user not found')
-            print(user.status)
             if(user.status == 'INACTIVE'):return  self.failedOrSuccessRequest('failed', 400, 'user not verified')
             user_dict = queryResultToDict([user])[0]
             
