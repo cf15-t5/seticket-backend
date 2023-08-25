@@ -7,7 +7,8 @@ all_user_permission=[
   '/users/update-profile',
   '/users/topup',
   '/users/withdraw',
-  '/transactions/my'
+  '/transactions/my',
+  '/tickets/my'
 ]
 
 admin_permission=[
