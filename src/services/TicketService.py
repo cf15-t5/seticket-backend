@@ -122,7 +122,7 @@ class TicketService(Service):
             ticket = ticketRepository.getTicketByCode(data['ticket_code'])
             if(not ticket):
                 return self.failedOrSuccessRequest('failed', 400, 'ticket not found')
-            if(ticket.user_id != user_id):
+            if(ticket.event.user_id != user_id):
                 return self.failedOrSuccessRequest('failed', 400, 'ticket not belong to you')
             if(ticket.is_attended):
                 return self.failedOrSuccessRequest('failed', 400, 'ticket already attended')
