@@ -25,7 +25,7 @@ class AuthService(Service):
         sendMail(
             templates=templates,
             subject="Ticket Event",
-            to=data.user.email
+            to=data.email
             )
         return True
     
