@@ -16,7 +16,7 @@ class AuthService(Service):
             "code": code,
             'data': data,
         }
-    def _sendNotification(self,data):
+    def _sendNotification(self,data,to):
         templates = render_template(
                 'html/registeredEoNotification.html',
                 name=data.name,
@@ -25,7 +25,7 @@ class AuthService(Service):
         sendMail(
             templates=templates,
             subject="Ticket Event",
-            to=data.email
+            to=to
             )
         return True
     
@@ -40,7 +40,8 @@ class AuthService(Service):
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
             newUser = user_repository.createNewUser(data)
             if(newUser.role == 'EVENT_ORGANIZER'):
-                self._sendNotification(newUser)
+                userAdmin = user_repository.getUserByRole('ADMIN')
+                self._sendNotification(newUser,userAdmin[0].email)
             
             return self.failedOrSuccessRequest('success', 201, queryResultToDict([newUser])[0])
         except ValueError as e:
