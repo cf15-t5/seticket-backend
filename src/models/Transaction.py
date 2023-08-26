@@ -7,10 +7,10 @@ class Transaction(db.Model):
   type = db.Column(db.String(10), nullable=False)
   nominal = db.Column(db.Integer, nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-  ticket_id = db.Column(db.Integer, db.ForeignKey('tickets.ticket_id'))
+  ticket_id = db.Column(db.Integer, db.ForeignKey('tickets.ticket_id',ondelete='CASCADE'))
   created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
   user = db.relationship("User", back_populates="transactions")  
-  ticket = db.relationship("Ticket", back_populates="transactions")
+  ticket = db.relationship("Ticket", back_populates="transactions", cascade="all, delete")
   def __init__(self, type, user_id, nominal):
     self.type = type
     self.user_id = user_id

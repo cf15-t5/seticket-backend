@@ -69,6 +69,7 @@ class EventRepository:
     event = Event.query.filter_by(event_id=event_id).first()
     if(not event) :return False
     event.status = status
+    event.change_status_at = datetime.now()
     db.session.commit()
     return event
   
