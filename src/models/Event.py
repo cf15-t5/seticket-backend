@@ -12,6 +12,7 @@ class Event(db.Model):
   description= db.Column(db.Text)
   poster_path = db.Column(db.Text)
   address= db.Column(db.Text)
+  status_change_at = db.Column(db.DateTime, nullable=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
   category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
   category = db.relationship('Category', backref='events')

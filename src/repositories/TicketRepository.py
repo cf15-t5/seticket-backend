@@ -1,13 +1,12 @@
 from src.models.Ticket import Ticket,db
+from sqlalchemy import and_
 import string    
 import random
 class TicketRepository:
   def getAllTickets(self):
-    return Ticket.query.all()  
-  
+    return Ticket.query.filter(Ticket.event_id.isnot(None)).all()  
   def getAllTicketByUserId(self,user_id):
-    return Ticket.query.filter_by(user_id=user_id).all()
-  
+    return Ticket.query.filter(and_(Ticket.user_id == user_id, Ticket.event_id.isnot(None))).all()  
   def getAllTicketByEventId(self,event_id):
     return Ticket.query.filter_by(event_id=event_id).all()
   
@@ -27,4 +26,4 @@ class TicketRepository:
     db.session.commit()
     return ticket
   def getTicketByCode(self,code):
-    return Ticket.query.filter_by(ticket_code=code).first()
+    return Ticket.query.filter(and_(Ticket.ticket_code == code, Ticket.event_id.isnot(None))).first()
