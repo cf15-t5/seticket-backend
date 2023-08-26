@@ -28,6 +28,10 @@ class CategoryService(Service):
             validate = CreateNewCategoryValidator(**data)
             if not validate:
                 return self.failedOrSuccessRequest('failed', 400, 'Validation failed')
+            category = categoryRepository.getCategoryByName(data['name'])
+            if(category):
+                return self.failedOrSuccessRequest('failed', 400, 'category already exist')
+            
             newCategory = categoryRepository.createNewCategory(data)
             return self.failedOrSuccessRequest('success', 201, queryResultToDict([newCategory])[0])
         except ValueError as e:

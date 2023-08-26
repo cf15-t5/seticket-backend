@@ -26,3 +26,5 @@ class CategoryRepository:
     db.session.delete(category)
     db.session.commit()
     return True
+  def getCategoryByName(self,name):
+    return Category.query.filter_by(name=name).first()
