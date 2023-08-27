@@ -8,7 +8,6 @@ all_user_permission=[
   '/users/topup',
   '/users/withdraw',
   '/transactions/my',
-  '/tickets/my'
 ]
 
 admin_permission=[
@@ -20,6 +19,7 @@ admin_permission=[
 ]
 
 user_permission=[
+  '/tickets/my'
   
 ]
 

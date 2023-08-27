@@ -56,6 +56,12 @@ class EventService(Service):
                 return EventService.failedOrSuccessRequest('failed', 400, 'Validation failed')
             if not file['poster']:
                 return EventService.failedOrSuccessRequest('failed', 400, 'poster is required')
+            if file['poster'].content_type not in ['image/jpeg','image/png']:
+                return EventService.failedOrSuccessRequest('failed', 400, 'poster must be image')
+            if sys.getsizeof(file['poster'].read()) > 2000000:
+                return EventService.failedOrSuccessRequest('failed', 400, 'poster must be less than 2mb')
+            # 
+            
             poster = upload_file(file['poster'])
             newEvent = eventRepository.createNewEvent(**data,poster_path=poster,user_id=user_id)
             return EventService.failedOrSuccessRequest('success', 201, queryResultToDict([newEvent])[0])

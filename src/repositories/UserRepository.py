@@ -4,9 +4,12 @@ import sys
 
 
 class UserRepository:
+
     def getAllUser(self):
         return User.query.all()
-
+    def getUserByRole(self,role):
+        return User.query.filter_by(role=role).all()
+    
     def getUserByEmail(self, email):
         return User.query.filter_by(email=email).first()
 
@@ -60,3 +63,4 @@ class UserRepository:
 
         db.session.commit()
         return user
+
